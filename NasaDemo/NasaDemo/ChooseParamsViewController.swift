@@ -10,7 +10,7 @@ import UIKit
 class ChooseParamsViewController: UIViewController {
     @IBOutlet private weak var roverTextField: UITextField!
     @IBOutlet private weak var cameraTextField: UITextField!
-    @IBOutlet private weak var dateTextField: UITextField!
+    @IBOutlet private weak var datePicker: UIDatePicker!
     @IBOutlet private  weak var searchButton: UIButton!
 
     private let roverPicker = UIPickerView()
@@ -25,7 +25,7 @@ class ChooseParamsViewController: UIViewController {
         
         self.setupPickers()
         self.setupSearchButton()
-        self.disableTextFieldIfNeeded()
+        self.disableElementsIfNeeded()
     }
 
     private func setupPickers() {
@@ -38,6 +38,8 @@ class ChooseParamsViewController: UIViewController {
 
         self.roverTextField.inputView = self.roverPicker
         self.cameraTextField.inputView = self.cameraPicker
+
+        self.setupDatePicker()
     }
 
     private func setupSearchButton() {
@@ -46,8 +48,20 @@ class ChooseParamsViewController: UIViewController {
         self.searchButton.layer.cornerRadius = 12
     }
 
-    private func disableTextFieldIfNeeded() {
-        self.cameraTextField.isEnabled = self.viewModel.searchModel != nil
+    private func disableElementsIfNeeded() {
+        let isEnabled = self.viewModel.searchModel != nil
+        self.cameraTextField.isEnabled = isEnabled
+        self.datePicker.isEnabled = isEnabled
+        self.searchButton.isEnabled = self.viewModel.searchModel?.cameraType != nil
+    }
+
+    private func setupDatePicker(){
+        self.datePicker.maximumDate = Date()
+        self.datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+    }
+
+    @objc func datePickerValueChanged(_ sender: UIDatePicker){
+        self.viewModel.setDate(sender.date)
     }
 
     private func proceedSearch() {
@@ -99,6 +113,6 @@ extension ChooseParamsViewController: UIPickerViewDelegate, UIPickerViewDataSour
         default: return
         }
         self.view.endEditing(false)
-        self.disableTextFieldIfNeeded()
+        self.disableElementsIfNeeded()
     }
 }

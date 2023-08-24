@@ -10,7 +10,7 @@ import Foundation
 struct SearchModel {
     let rover: Rover
     private (set) var cameraType: CameraType?
-    var date: Date?
+    var date: String?
 
     mutating func setCameraType(with index: Int) {
         cameraType = rover.cameras[index]

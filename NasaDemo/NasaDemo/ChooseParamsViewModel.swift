@@ -14,4 +14,11 @@ class ChooseParamsViewModel {
         guard let model = searchModel else { return nil }
         return PhotoListViewModel(model: model)
     }
+
+    func setDate(_ date: Date) {
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY-MM-DD"
+        let dateString: String = dateFormatter.string(from: date)
+        self.searchModel?.date = dateString
+    }
 }
