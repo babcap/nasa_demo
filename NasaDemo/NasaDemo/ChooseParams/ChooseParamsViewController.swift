@@ -52,7 +52,7 @@ class ChooseParamsViewController: UIViewController {
         let isEnabled = self.viewModel.searchModel != nil
         self.cameraTextField.isEnabled = isEnabled
         self.datePicker.isEnabled = isEnabled
-        self.searchButton.isEnabled = self.viewModel.searchModel?.cameraType != nil
+        self.searchButton.isEnabled = isEnabled
     }
 
     private func setupDatePicker(){

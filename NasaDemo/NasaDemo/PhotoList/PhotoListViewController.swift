@@ -29,6 +29,18 @@ class PhotoListViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.register(PhotoCell.nib, forCellReuseIdentifier: PhotoCell.identifier)
     }
+
+    private func showImage(viewModel: PhotoCellViewModel, from view: UIView) {
+        let imageInfo   = GSImageInfo(image: viewModel.image, imageMode: .aspectFit)
+        let transitionInfo = GSTransitionInfo(fromView: view)
+        let imageViewer = GSImageViewerController(imageInfo: imageInfo, transitionInfo: transitionInfo)
+        
+        imageViewer.dismissCompletion = {
+            print("dismissCompletion")
+        }
+        
+        present(imageViewer, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -49,5 +61,21 @@ extension PhotoListViewController: UITableViewDataSource {
 }
 
 extension PhotoListViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: false)
+        guard let cell = self.tableView.cellForRow(at: indexPath) else { return }
+        let viewModel = viewModel.getCellViewModel(at: indexPath)
+        self.showImage(viewModel: viewModel, from: cell)
+    }
+}
+
+extension PhotoListViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard scrollView == tableView else { return }
+        
+        if ((scrollView.contentOffset.y + scrollView.frame.size.height) >= scrollView.contentSize.height)
+        {
+            self.viewModel.getSearchPhotos()
+        }
+    }
 }

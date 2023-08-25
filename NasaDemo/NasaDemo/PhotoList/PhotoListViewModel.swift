@@ -16,6 +16,7 @@ class PhotoListViewModel {
 
     var photos = Photos()
     private var currentPage = 1
+    private var isLoading = false
 
     var photoCellViewModels = [PhotoCellViewModel]() {
         didSet {
@@ -29,7 +30,12 @@ class PhotoListViewModel {
     }
 
     func getSearchPhotos() {
+        guard !self.isLoading else { return }
+
+        self.isLoading = true
         self.photoService.getPhotos(with: self.searchModel, page: self.currentPage) { success, model, error in
+            
+            self.isLoading = false
             if success, let photos = model {
                 self.currentPage += 1
                 self.fetchData(photos: photos)
@@ -51,7 +57,7 @@ class PhotoListViewModel {
                     let destinationURL = try manager
                         .url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                         .appendingPathComponent(pathComponent)
-                    let data = try! Data(contentsOf: destinationURL)
+                    guard let data = try? Data(contentsOf: destinationURL) else { return }
 
                     let image = UIImage(data: data)
                     cellVM.append(.init(id: photo.id, name: photo.camera.fullName, image: image ?? UIImage()))
