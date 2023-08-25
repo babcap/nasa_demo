@@ -7,12 +7,17 @@
 
 import UIKit
 
+typealias Completion = (() -> Void)
+
 class PhotoListViewModel {
     let searchModel: SearchModel
     private var photoService: PhotosServiceProtocol
     let downloadManager = DownloadManager()
 
-    var reloadTableView: (() -> Void)?
+    var reloadTableView: Completion?
+    var emptyResult: Completion?
+    var startActivityIndicator: Completion?
+    var stopActivityIndicator: Completion?
 
     var photos = Photos()
     private var currentPage = 1
@@ -33,12 +38,19 @@ class PhotoListViewModel {
         guard !self.isLoading else { return }
 
         self.isLoading = true
+        self.startActivityIndicator?()
         self.photoService.getPhotos(with: self.searchModel, page: self.currentPage) { success, model, error in
             
             self.isLoading = false
+            self.stopActivityIndicator?()
+
             if success, let photos = model {
-                self.currentPage += 1
-                self.fetchData(photos: photos)
+                if photos.isEmpty {
+                    self.emptyResult?()
+                } else {
+                    self.currentPage += 1
+                    self.fetchData(photos: photos)                    
+                }
             } else {
                 print(error!)
             }
@@ -48,6 +60,8 @@ class PhotoListViewModel {
     func fetchData(photos: Photos) {
         self.photos = photos
         var cellVM = [PhotoCellViewModel]()
+
+        self.startActivityIndicator?()
         
         let completion = BlockOperation {
             for photo in photos {
@@ -67,6 +81,7 @@ class PhotoListViewModel {
                 }
 
             }
+            self.stopActivityIndicator?()
             self.photoCellViewModels.append(contentsOf: cellVM)
             self.reloadTableView?()
         }

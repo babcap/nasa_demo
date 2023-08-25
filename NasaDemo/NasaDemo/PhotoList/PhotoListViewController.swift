@@ -11,17 +11,67 @@ class PhotoListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     var viewModel: PhotoListViewModel!
+    let activityView = UIActivityIndicatorView(style: .large)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setupActivityIndicator()
+        self.setupViewModel()
         self.viewModel.getSearchPhotos()
         self.setupTableView()
+    }
 
-        viewModel.reloadTableView = { [weak self] in
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setupNavigationBar()
+    }
+
+    private func setupViewModel() {
+        self.viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
             }
         }
+
+        self.viewModel.emptyResult = { [weak self] in
+            DispatchQueue.main.async {
+                self?.emptyResultAlert()
+            }
+        }
+
+        self.viewModel.startActivityIndicator = { [weak self] in
+            DispatchQueue.main.async {
+                self?.activityView.startAnimating()
+            }
+        }
+
+        self.viewModel.stopActivityIndicator = { [weak self] in
+            DispatchQueue.main.async {
+                self?.activityView.stopAnimating()
+            }
+        }
+    }
+    
+    func emptyResultAlert() {
+        let alert = UIAlertController(title: "Oops", message: "No photos for these search options", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Ok", style: .default, handler: doSomething)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func doSomething(action: UIAlertAction) {
+        self.navigationController?.popViewController(animated: true)
+    }
+
+    private func setupActivityIndicator() {
+        self.activityView.center = self.view.center
+        self.view.addSubview(activityView)
+    }
+
+    private func setupNavigationBar() {
+        self.navigationController?.navigationBar.tintColor = .black
+        self.title = "Photos"
     }
 
     private func setupTableView() {

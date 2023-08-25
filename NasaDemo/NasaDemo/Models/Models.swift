@@ -15,16 +15,17 @@ enum Rover: String, CaseIterable {
     var cameras: [CameraType] {
         switch self {
         case .curiosity:
-            return [.fhaz, .rhaz, .mast, .chemcam, .mahli, .mardi, .navcam]
+            return [.none, .fhaz, .rhaz, .mast, .chemcam, .mahli, .mardi, .navcam]
         case .opportunity:
-            return [.fhaz, .rhaz, .navcam, .pancam, .minutes]
+            return [.none, .fhaz, .rhaz, .navcam, .pancam, .minutes]
         case .spirit:
-            return [.fhaz, .rhaz, .navcam, .pancam, .minutes]
+            return [.none, .fhaz, .rhaz, .navcam, .pancam, .minutes]
         }
     }
 }
 
 enum CameraType: String {
+    case none = "All Cameras"
     case fhaz = "Front Hazard Avoidance Camera"
     case rhaz = "Rear Hazard Avoidance Camera"
     case mast = "Mast Camera"
@@ -48,7 +49,7 @@ struct SearchModel {
     func queryParams() -> [URLQueryItem] {
         var paramsArray = [URLQueryItem]()
 
-        if let cameraType = cameraType {
+        if let cameraType = cameraType, cameraType != CameraType.none {
             paramsArray.append(URLQueryItem(name: "camera", value: "\(cameraType)"))
         }
         if let dateString = date {

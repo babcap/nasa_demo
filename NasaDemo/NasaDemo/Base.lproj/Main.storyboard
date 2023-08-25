@@ -60,8 +60,11 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="56" id="wDN-0X-COr"/>
                                 </constraints>
+                                <color key="tintColor" red="0.0" green="0.0" blue="0.40000000000000002" alpha="0.84705882352941175" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Button">
+                                    <fontDescription key="titleFontDescription" name="MarkerFelt-Thin" family="Marker Felt" pointSize="20"/>
+                                </buttonConfiguration>
                                 <connections>
                                     <action selector="onSearchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HFi-iu-tlN"/>
                                 </connections>

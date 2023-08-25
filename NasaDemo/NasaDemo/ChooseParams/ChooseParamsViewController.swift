@@ -26,6 +26,7 @@ class ChooseParamsViewController: UIViewController {
         self.setupPickers()
         self.setupSearchButton()
         self.disableElementsIfNeeded()
+        self.addTapGesture()
     }
 
     private func setupPickers() {
@@ -42,9 +43,13 @@ class ChooseParamsViewController: UIViewController {
         self.setupDatePicker()
     }
 
+    private func addTapGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        self.view.addGestureRecognizer(tap)
+    }
+
     private func setupSearchButton() {
         self.searchButton.setTitle("Search Photos", for: .normal)
-        self.searchButton.tintColor = UIColor.init(red: 0, green: 0, blue: 153, alpha: 1)
         self.searchButton.layer.cornerRadius = 12
     }
 
@@ -60,8 +65,12 @@ class ChooseParamsViewController: UIViewController {
         self.datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
     }
 
-    @objc func datePickerValueChanged(_ sender: UIDatePicker){
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker){
         self.viewModel.setDate(sender.date)
+    }
+
+    @objc private func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        self.view.endEditing(false)
     }
 
     private func proceedSearch() {
