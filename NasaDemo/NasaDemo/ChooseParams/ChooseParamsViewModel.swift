@@ -17,7 +17,7 @@ class ChooseParamsViewModel {
 
     func setDate(_ date: Date) {
         let dateFormatter: DateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "YYYY-MM-DD"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString: String = dateFormatter.string(from: date)
         self.searchModel?.date = dateString
     }

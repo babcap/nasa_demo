@@ -7,16 +7,6 @@
 
 import Foundation
 
-struct SearchModel {
-    let rover: Rover
-    private (set) var cameraType: CameraType?
-    var date: String?
-
-    mutating func setCameraType(with index: Int) {
-        cameraType = rover.cameras[index]
-    }
-}
-
 enum Rover: String, CaseIterable {
     case curiosity = "Curiosity"
     case opportunity = "Opportunity"
@@ -45,3 +35,26 @@ enum CameraType: String {
     case pancam = "Panoramic Camera"
     case minutes = "Miniature Thermal Emission Spectrometer (Mini-TES)"
 }
+
+struct SearchModel {
+    let rover: Rover
+    private (set) var cameraType: CameraType?
+    var date: String?
+
+    mutating func setCameraType(with index: Int) {
+        cameraType = rover.cameras[index]
+    }
+
+    func queryParams() -> [URLQueryItem] {
+        var paramsArray = [URLQueryItem]()
+
+        if let cameraType = cameraType {
+            paramsArray.append(URLQueryItem(name: "camera", value: "\(cameraType)"))
+        }
+        if let dateString = date {
+            paramsArray.append(URLQueryItem(name: "earth_date", value: "\(dateString)"))
+        }
+        return paramsArray
+    }
+}
+

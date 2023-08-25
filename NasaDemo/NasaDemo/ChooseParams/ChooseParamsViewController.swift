@@ -66,9 +66,10 @@ class ChooseParamsViewController: UIViewController {
 
     private func proceedSearch() {
         guard let photoListModel = self.viewModel.photoListViewModel() else { return }
-        let vc = PhotoListViewController(viewModel: photoListModel)
-        let navigation = UINavigationController(rootViewController: vc)
-        self.present(navigation, animated: true, completion: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: "PhotoListViewController") as! PhotoListViewController
+        controller.viewModel = photoListModel
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 
     @IBAction private func onSearchButton(_ sender: Any) {
@@ -106,6 +107,7 @@ extension ChooseParamsViewController: UIPickerViewDelegate, UIPickerViewDataSour
         case 1:
             let model = SearchModel(rover: Rover.allCases[row])
             self.viewModel.searchModel = model
+            self.viewModel.setDate(Date())
             self.roverTextField.text = model.rover.rawValue
         case 2:
             self.viewModel.searchModel?.setCameraType(with: row)
